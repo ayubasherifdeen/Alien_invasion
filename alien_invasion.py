@@ -82,7 +82,8 @@ class AlienInvasion:
                 self.bullets.remove(bullet)
 
     def _update_aliens(self):
-        """UPdatte the positions of all aliens in the fleet"""
+        """check if fleet is at the edge then update the positions of all aliens in the fleet"""
+        self._check_fleet_edges
         self.aliens.update()
 
         
@@ -105,6 +106,9 @@ class AlienInvasion:
          #create the first row of aliens
             for alien_number in range(number_aliens_x):
                self._create_alien(alien_number, row_number)
+        
+
+
            
     def _create_alien(self, alien_number, row_number):
         """Create alien"""
@@ -115,6 +119,20 @@ class AlienInvasion:
         alien.rect.y = alien.rect.height + 2 * alien.rect.height * row_number
         self.aliens.add(alien)
 
+
+    def _check_fleet_edges(self):
+        """Respond to aliens reaching the edges"""
+        for alien in self.aliens.sprites():
+            if alien.check_edges():
+                self._change_fleet_direction()
+                break
+
+    
+    def _change_fleet_direction(self):
+        """drop entire fleet and change fleet's direction"""
+        for alien in self.aliens.sprites():
+            alien.rect.y += self.settings.fleet_drop_speed
+        self.settings.fleet_direction *= -1
 
 
     def _update_screen(self):
